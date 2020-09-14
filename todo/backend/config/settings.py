@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'qgn*nqiu%bg3rivb+i2tg94z(=#0_^4mkyn*^$btd%#x9fv56v'
+SECRET_KEY = 'm_1g+)9!5dr^vk6b)iaa1=^rar#z6jg=t6wjg@f!6!@on6)8f&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,12 +37,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # thrid party 
+    'rest_framework',
+    'corsheaders',
+
     # local 
-    'books.apps.BooksConfig',
-    'api.apps.ApiConfig',
-    # third party 
-    'rest_framework'
+    'todos',
 ]
+
+REST_FRAMEWORK = {
+        'DEFAULT_PERMISSION_CLASSES': [ 
+            'rest_framework.permissions.AllowAny',
+            ]
+        }
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -50,9 +58,15 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ORIGEN_WHITELIST = (
+        'https://localhost:3000',
+        'https://localhost:8000',
+        )
 
 ROOT_URLCONF = 'config.urls'
 
