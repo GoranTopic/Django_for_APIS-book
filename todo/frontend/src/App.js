@@ -2,23 +2,7 @@ import React, { useReducer, useEffect, useCallback  } from 'react';
 import './App.css';
 
 const initialState = {
-		list:[
-				{
-						"id":1,
-						"title":"1st todo",
-						"body":"Learn Django properly"
-				},
-				{
-						"id":2,
-						"title":"Second item",
-						"body":"Learn Python ",
-				},
-				{
-						"id":3,
-						"title":"Learn HTTP",
-						"body":"It's important",
-				}
-		],
+		list:[],
 		isError: false,
 		isLoading: false,
 }
@@ -52,13 +36,8 @@ function App() {
 		const handleFetchList = useCallback(() => {
 				dispatcher({ type: 'SET_IS_LOADING' });
 				fetch('http://127.0.0.1:8000/api/')
-						.then( result => {
-								return result.json();
-						} )
-						.then( result => {
-								console.log("this ran");
-								console.log(result);
-								dispatcher({ type:'FETCH_SUCCESS', payload: result })} )
+						.then( result => result.json() )
+						.then( result => dispatcher({ type:'FETCH_SUCCESS', payload: result }) )
 						.catch( () => dispatcher({ type: 'FETCH_ERROR' }) );
 		}, []);
 
