@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect  } from 'react';
+import React, { useReducer, useEffect, useCallback  } from 'react';
 import './App.css';
 
 const initialState = {
@@ -33,7 +33,7 @@ function App() {
 						case 'FETCH_SUCCESS':
 								return { list: action.payload, IsLoading: false, } 
 						case 'FETCH_ERROR':
-								return { list: [], IsLoading: false, isError:true,  } 
+								return { ...state, list: [], isError:true,  } 
 						case 'SET_LIST':
 								return { list: action.payload } 
 						case 'REMOVE_ITEM':
@@ -47,21 +47,22 @@ function App() {
 		// define dispatcher with the reducer 
 		const [ state, dispatcher ] = useReducer(reducer, initialState);
 
-
-
 		//definie use effecto load up the request 
-		useEffect(() => {
-				// Set State as loading
-				dispatcher({ type: 'SET_IS_LOADING' });
-				//fetch from API list
-				fetch('http://127.0.0.1:8000/api/')
-						.then( res => res.json() )
-						.then( res => dispatcher({ type:'FETCH_SUCCESS', payload: res.data }) )
-						.catch( () => dispatcher({ type:'FETCH_ERROR'  }))
-		}, [])
-		
 
-		
+		const handleFetchList = useCallback(() => {
+				dispatcher({ type: 'SET_IS_LOADING' });
+				fetch('http://127.0.0.1:8000/api/')
+						.then( result => {
+								return result.json();
+						} )
+						.then( result => {
+								console.log("this ran");
+								console.log(result);
+								dispatcher({ type:'FETCH_SUCCESS', payload: result })} )
+						.catch( () => dispatcher({ type: 'FETCH_ERROR' }) );
+		}, []);
+
+		useEffect(() => { handleFetchList(); }, [handleFetchList]);
 
 
 
@@ -69,14 +70,14 @@ function App() {
 				<div className="App">
 						<header className="App-header">	
 								{ state.isError && <p>Something went wrong =(</p> }
-								{ (state.isLoading)? <p>Loading...</p> :  <List list={state.list} /> }
+								{ state.isLoading? <p>Loading...</p> :  <List list={state.list} /> }
 						</header>
 				</div>
 		);
 }
 
 
-const List = ({ list, }) => {
+const List = ({ list }) => {
 		return <>
 				{list.map(item => (
 						<div key={item.id}>
