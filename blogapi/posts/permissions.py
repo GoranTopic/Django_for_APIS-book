@@ -2,7 +2,7 @@ from rest_framework import permissions
 
 
 class IsAuthorOrReadOnly(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request, view, obj=None):
         # Read-only permissions are allowed for any request
         # beacuse if the request method is GET OPTIONS and HEAD then 
         # permissions are granted safely
@@ -12,4 +12,4 @@ class IsAuthorOrReadOnly(permissions.BasePermission):
         # Write permissions are only allowed to the author of a post
         # if it is not in  the SAFE_METHODS the is must be for post of update 
         # and thus it is only granted if the object author is the reques user
-        return obj.author == request.user
+        return obj is None or obj.author == request.user
