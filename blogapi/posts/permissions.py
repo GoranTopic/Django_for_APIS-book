@@ -8,8 +8,16 @@ class IsAuthorOrReadOnly(permissions.BasePermission):
         # permissions are granted safely
         if request.method in permissions.SAFE_METHODS:
             return True
-
         # Write permissions are only allowed to the author of a post
         # if it is not in  the SAFE_METHODS the is must be for post of update 
         # and thus it is only granted if the object author is the reques user
-        return obj is None or obj.author == request.user
+        if obj is None:
+            return False
+        elif hasattr(obj, 'author'):
+            return obj.author == request.user
+        elif hasattr(obj, 'username'):
+            return obj.username == request.user
+        else:
+            return False
+
+
